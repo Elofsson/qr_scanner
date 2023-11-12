@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qr_scanner/qr_scanner.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,22 +38,22 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Hello world!',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: const [
+          Align(
+            alignment: Alignment.topCenter,
+            child: Scanner()
+          ),
+          Text("Test"),
+        ],
       ),
+    
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           print("Button pressed!");
         },
-        tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
