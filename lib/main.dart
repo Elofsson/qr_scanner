@@ -38,24 +38,18 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: const [
-          Align(
-            alignment: Alignment.topCenter,
-            child: Scanner()
-          ),
-          Text("Test"),
-        ],
+      body: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Scanner()
       ),
+    );
     
-      floatingActionButton: FloatingActionButton(
+      /*floatingActionButton: FloatingActionButton(
         onPressed: () {
           print("Button pressed!");
         },
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+      ), // This trailing comma makes auto-formatting nicer for build methods.*/
   }
 }
