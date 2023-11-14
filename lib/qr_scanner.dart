@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:qr_scanner/ui/scanned_item.dart';
 
 class Scanner extends StatefulWidget {
   const Scanner({super.key});
@@ -12,7 +13,7 @@ class Scanner extends StatefulWidget {
 }
 
 class ScannerState extends State<Scanner> {
-  List<Barcode> barcodes = [];
+  List<Barcode> scannedBarcodes = [];
   final MobileScannerController controller = MobileScannerController(
     detectionSpeed: DetectionSpeed.normal,
     facing: CameraFacing.back,
@@ -32,7 +33,6 @@ class ScannerState extends State<Scanner> {
     }
   }
 
-  //TODO fix the scrolling. I want to be able to scroll down where the scanner is kinda "attached" to the top
   @override
   Widget build(BuildContext context) {
     return 
@@ -41,11 +41,34 @@ class ScannerState extends State<Scanner> {
         height: MediaQuery.of(context).size.height, // 20% of the screen height
         width: MediaQuery.of(context).size.width,  // 50% of the screen width
         padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-        child: 
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
+        child: _displayBarcodes(),
+      );
+  }
+
+  Widget _displayBarcodes() {
+    List<Widget> items = [];
+    items.add(_buildScanner());
+    
+    //Add scanned items that is not empty.
+    for(Barcode b in scannedBarcodes) {
+      final typeAndValue = convertBarcode(b);
+      if(!typeAndValue.isEmpty()) {
+        items.add(ScannedItem(item: typeAndValue, number: items.length));
+      }
+    }
+
+    return ListView.builder(
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        return Container(
+                  margin: const EdgeInsets.fromLTRB(20, 5, 20, 10),
+                  child: items[index],
+                );
+    });
+  }
+
+  Widget _buildScanner() {
+    return SizedBox(
               height: MediaQuery.of(context).size.height * 0.5, // 20% of the screen height
               width: MediaQuery.of(context).size.width * 0.9,  // 50% of the screen width
               child: MobileScanner(
@@ -54,52 +77,52 @@ class ScannerState extends State<Scanner> {
                 //fit: BoxFit.contain,
                 onDetect: (capture) {
                   final List<Barcode> barcodes = capture.barcodes;
-                  final Uint8List? image = capture.image;
                   for (final barcode in barcodes) {
                     debugPrint('Barcode found! ${barcode.rawValue}');
                     debugPrint('Url= ${barcode.url}');
+                    debugPrint('displayValue = ${barcode.displayValue}');
+                    debugPrint('type = ${barcode.type.toString()}');
                     debugPrint('The whole barcode= ${barcode.toString()}');
+                    
+                    setState(() {
+                      scannedBarcodes.add(barcode);
+                    });
                   }
                 },
               ),
-            ),
-            const SizedBox(width: 0, height: 20,),
-            Expanded(              
-              child: _displayBarcodes(),
-            )
-          ],
-        )
-      );
+            );
   }
 
-  Widget _displayBarcodes() {
-    return ListView.builder(
-      itemCount: 5,
-      itemBuilder: (context, index) {
-        return Container(
-        margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-        padding: const EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          border: Border.all(
-            color: Colors.green, // Border color
-            width: 2.0,
-          ),
-        ),
-        child: Column(
-          children: [
-            const Text(
-              "Test",
-              style: TextStyle(fontSize: 18.0),
-            ),
-            const SizedBox(height: 8.0),
-            Text(
-              'Number: $index',
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      );
-    });
+  //TODO implement all types.
+  Item convertBarcode(Barcode barcode) {
+    final type = barcode.type;
+    switch(type) {
+      case BarcodeType.unknown:
+        return Item(type: "", value: "");
+      case BarcodeType.contactInfo:
+        return Item(type: "Contact info", value: barcode.contactInfo!.name!.formattedName ?? "");
+      case BarcodeType.email:
+        return Item(type: "Email", value: barcode.email!.address ?? "");
+      case BarcodeType.isbn:
+        return Item(type: "TODO implement", value: "TODO implement");
+      case BarcodeType.phone:
+        return Item(type: "TODO implement", value: "TODO implement");
+      case BarcodeType.product:
+        return Item(type: "TODO implement", value: "TODO implement");
+      case BarcodeType.sms:
+        return Item(type: "TODO implement", value: "TODO implement");
+      case BarcodeType.text:
+        return Item(type: "TODO implement", value: "TODO implement");
+      case BarcodeType.url:
+        return Item(type: "Url", value: barcode.url!.url);
+      case BarcodeType.wifi:
+        return Item(type: "TODO implement", value: "TODO implement");
+      case BarcodeType.geo:
+        return Item(type: "TODO implement", value: "TODO implement");
+      case BarcodeType.calendarEvent:
+        return Item(type: "TODO implement", value: "TODO implement");
+      case BarcodeType.driverLicense:
+        return Item(type: "TODO implement", value: "TODO implement");
+    }
   }
 }
