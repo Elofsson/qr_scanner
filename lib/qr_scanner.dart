@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:qr_scanner/display_item.dart';
 import 'package:qr_scanner/ui/scanned_item.dart';
 
 class Scanner extends StatefulWidget {
@@ -33,6 +34,17 @@ class ScannerState extends State<Scanner> {
     }
   }
 
+  Future<void> _displayItem(Item item) async {
+    controller.stop();
+    
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DisplayItem(barcode: item)),
+    );
+
+    controller.start();        
+  }
+
   @override
   Widget build(BuildContext context) {
     return 
@@ -53,7 +65,9 @@ class ScannerState extends State<Scanner> {
     for(Barcode b in scannedBarcodes) {
       final typeAndValue = convertBarcode(b);
       if(!typeAndValue.isEmpty()) {
-        items.add(ScannedItem(item: typeAndValue, number: items.length));
+        items.add(ScannedItem(item: typeAndValue, number: items.length, onTap: () {
+          _displayItem(typeAndValue);
+        }));
       }
     }
 
@@ -68,15 +82,24 @@ class ScannerState extends State<Scanner> {
   }
 
   Widget _buildScanner() {
-    return SizedBox(
+    return Stack(
+      alignment: Alignment.topCenter,
+      children: [
+        Container(
+              height: MediaQuery.of(context).size.height * 0.5,
+              width: MediaQuery.of(context).size.width * 0.9,
+              color: Colors.black,
+            ),
+        SizedBox(
               height: MediaQuery.of(context).size.height * 0.5, // 20% of the screen height
               width: MediaQuery.of(context).size.width * 0.9,  // 50% of the screen width
               child: MobileScanner(
                 //scanWindow: Rect.fromCenter(center: center, width: width, height: height),
                 controller: controller,
                 //fit: BoxFit.contain,
-                onDetect: (capture) {
+                onDetect: (capture) async {
                   final List<Barcode> barcodes = capture.barcodes;
+                  debugPrint("Number of barcodes= ${barcodes.length}");
                   for (final barcode in barcodes) {
                     debugPrint('Barcode found! ${barcode.rawValue}');
                     debugPrint('Url= ${barcode.url}');
@@ -87,10 +110,19 @@ class ScannerState extends State<Scanner> {
                     setState(() {
                       scannedBarcodes.add(barcode);
                     });
+
+                    //Navigate to new page to display the scanned item.
+                    final item = convertBarcode(barcode);
+                    _displayItem(item);
+                    debugPrint("Navigated back to scanner. Start camera");
+
                   }
+
+                  debugPrint("Exited onDetect");
                 },
               ),
-            );
+            ),
+    ],); 
   }
 
   //TODO implement all types.

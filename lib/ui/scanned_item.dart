@@ -14,14 +14,19 @@ class Item {
   }
 }
 
+//TODO add timestamp?
 class ScannedItem extends StatelessWidget {
   final Item item;
   final int number;
-  const ScannedItem({super.key, required this.item, required this.number});
+  final void Function()? onTap;
+  const ScannedItem({super.key, required this.item, required this.number, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onTap: onTap,
+      child: 
+      Container(
         //margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
         padding: const EdgeInsets.all(10.0),
         decoration: BoxDecoration(
@@ -44,6 +49,7 @@ class ScannedItem extends StatelessWidget {
             ),
           ],
         ),
-      );
+      )
+    );
   }
 }
