@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_scanner/qr_scanner.dart';
+import 'package:qr_scanner/utils/globals.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,6 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      scaffoldMessengerKey: snackbarKey,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

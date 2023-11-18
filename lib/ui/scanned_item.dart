@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../utils/utils.dart';
+
 class Item {
   final String type;
   final String value;
@@ -14,7 +16,6 @@ class Item {
   }
 }
 
-//TODO add timestamp?
 class ScannedItem extends StatelessWidget {
   final Item item;
   final int number;
@@ -41,6 +42,13 @@ class ScannedItem extends StatelessWidget {
             Text(
               "${item.type} : ${item.value}",
               style: const TextStyle(fontSize: 18.0),
+            ),
+            Text(
+              "Scanned at ${getTimestamp()}",
+              style: const TextStyle(
+                fontSize: 16.0, 
+                fontWeight: FontWeight.bold
+              )
             ),
             const SizedBox(height: 8.0),
             Text(

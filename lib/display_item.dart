@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:qr_scanner/ui/scanned_item.dart';
+import 'package:qr_scanner/utils/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
-//TODO add timestamp?
 class DisplayItem extends StatelessWidget {
   
   final Item barcode;
@@ -42,12 +41,19 @@ class DisplayItem extends StatelessWidget {
                   style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                 ),
             ),
+            Text(
+              "Scanned at ${getTimestamp()}",
+              style: const TextStyle(
+                fontSize: 16.0, 
+                fontWeight: FontWeight.bold
+              )
+            ),
             const SizedBox(height: 20,),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.6,
               child: 
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   // Button pressed action
                   _navigateToUrl(context, barcode.value);
                 },
@@ -71,28 +77,12 @@ class DisplayItem extends StatelessWidget {
     );
   }
 
-  //TODO This works! But there is a problem where once the link has been clicked and you return to the application,
-  // it is stuck at the same spot  
-  void _navigateToUrl(BuildContext context, String urlStr) async {
+  Future<void> _navigateToUrl(BuildContext context, String urlStr) async {
     final Uri url = Uri.parse(urlStr);
     try {
-      launchUrl(url);
+      await launchUrl(url);
     } catch(e) {
-      _showErrorSnackbar(context, "Failed to open the website );");
+      showErrorSnackbarWithContext(context, "Failed to open the website );");
     }
-  }
-
-  void _showErrorSnackbar(BuildContext context, String errorMessage) {
-    final snackBar = SnackBar(
-      content: Text(errorMessage),
-      action: SnackBarAction(
-        label: 'OK',
-        onPressed: () {
-          // Some action to take when the user presses the "OK" button
-        },
-      ),
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

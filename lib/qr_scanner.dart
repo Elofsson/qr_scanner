@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:qr_scanner/display_item.dart';
 import 'package:qr_scanner/ui/scanned_item.dart';
+import 'package:qr_scanner/utils/utils.dart';
 
 class Scanner extends StatefulWidget {
   const Scanner({super.key});
@@ -19,6 +20,7 @@ class ScannerState extends State<Scanner> {
     detectionSpeed: DetectionSpeed.normal,
     facing: CameraFacing.back,
     torchEnabled: false,
+    autoStart: false,
   );
 
   bool isStarted = true;
@@ -32,17 +34,30 @@ class ScannerState extends State<Scanner> {
     if(isStarted) {
       controller.start();
     }
+
+    debugPrint("Init qr scanner");
   }
 
   Future<void> _displayItem(Item item) async {
+    
+    //Stop camera.
     controller.stop();
+    isStarted = false;
     
     await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => DisplayItem(barcode: item)),
     );
-
-    controller.start();        
+    
+    //Attempt to start the camera.
+    if(!isStarted) {
+      try {
+        controller.start();
+      } catch(e) {
+        const String errorMsg = "Failed to start camera";
+        showErrorSnackbar(errorMsg);
+      }
+    }
   }
 
   @override
