@@ -75,7 +75,8 @@ class ScannerState extends State<Scanner> {
   Widget _displayBarcodes() {
     List<Widget> items = [];
     items.add(_buildScanner());
-    
+    items.add(ScannedItem(item: Item(type: "url", value: "Test", timeStamp: getTimestamp()), number: 1, onTap: () {}));
+
     //Add scanned items that is not empty.
     for(Barcode b in scannedBarcodes) {
       final typeAndValue = convertBarcode(b);
@@ -140,36 +141,37 @@ class ScannerState extends State<Scanner> {
     ],); 
   }
 
+  //TODO the timeStamp handling definitly needs to be improved.
   //TODO implement all types.
   Item convertBarcode(Barcode barcode) {
     final type = barcode.type;
     switch(type) {
       case BarcodeType.unknown:
-        return Item(type: "", value: "");
+        return Item(type: "", value: "", timeStamp: getTimestamp());
       case BarcodeType.contactInfo:
-        return Item(type: "Contact info", value: barcode.contactInfo!.name!.formattedName ?? "");
+        return Item(type: "Contact info", value: barcode.contactInfo!.name!.formattedName ?? "", timeStamp: getTimestamp());
       case BarcodeType.email:
-        return Item(type: "Email", value: barcode.email!.address ?? "");
+        return Item(type: "Email", value: barcode.email!.address ?? "", timeStamp: getTimestamp());
       case BarcodeType.isbn:
-        return Item(type: "TODO implement", value: "TODO implement");
+        return Item(type: "TODO implement", value: "TODO implement", timeStamp: getTimestamp());
       case BarcodeType.phone:
-        return Item(type: "TODO implement", value: "TODO implement");
+        return Item(type: "TODO implement", value: "TODO implement", timeStamp: getTimestamp());
       case BarcodeType.product:
-        return Item(type: "TODO implement", value: "TODO implement");
+        return Item(type: "TODO implement", value: "TODO implement", timeStamp: getTimestamp());
       case BarcodeType.sms:
-        return Item(type: "TODO implement", value: "TODO implement");
+        return Item(type: "TODO implement", value: "TODO implement", timeStamp: getTimestamp());
       case BarcodeType.text:
-        return Item(type: "TODO implement", value: "TODO implement");
+        return Item(type: "TODO implement", value: "TODO implement", timeStamp: getTimestamp());
       case BarcodeType.url:
-        return Item(type: "Url", value: barcode.url!.url);
+        return Item(type: "Url", value: barcode.url!.url, timeStamp: getTimestamp());
       case BarcodeType.wifi:
-        return Item(type: "TODO implement", value: "TODO implement");
+        return Item(type: "TODO implement", value: "TODO implement", timeStamp: getTimestamp());
       case BarcodeType.geo:
-        return Item(type: "TODO implement", value: "TODO implement");
+        return Item(type: "TODO implement", value: "TODO implement", timeStamp: getTimestamp());
       case BarcodeType.calendarEvent:
-        return Item(type: "TODO implement", value: "TODO implement");
+        return Item(type: "TODO implement", value: "TODO implement", timeStamp: getTimestamp());
       case BarcodeType.driverLicense:
-        return Item(type: "TODO implement", value: "TODO implement");
+        return Item(type: "TODO implement", value: "TODO implement", timeStamp: getTimestamp());
     }
   }
 }

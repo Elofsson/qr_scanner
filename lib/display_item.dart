@@ -21,33 +21,10 @@ class DisplayItem extends StatelessWidget {
         height: MediaQuery.of(context).size.height,
         padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
         alignment: Alignment.center,
-        child: 
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          //crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              //margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-                border: Border.all(
-                  color: Colors.green, // Border color
-                  width: 2.0,
-                ),
-              ),
-              child: Text(
-                  barcode.value,
-                  style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-                ),
-            ),
-            Text(
-              "Scanned at ${getTimestamp()}",
-              style: const TextStyle(
-                fontSize: 16.0, 
-                fontWeight: FontWeight.bold
-              )
-            ),
+            ScannedItemData(item: barcode),
             const SizedBox(height: 20,),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.6,
